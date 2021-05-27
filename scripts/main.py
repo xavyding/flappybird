@@ -93,7 +93,7 @@ class Game(object):
         self.B = Bird(self.bird_x)
         self.O = []
         for i in range(self.nbr_obstacles):
-            self.O.append(Obstacle(min=0, max=self.window_size_y, size=self.obstacle_gap_y, x=300+(i+1)*self.obstacle_gap_x))
+            self.O.append(Obstacle(min=0, max=self.window_size_y, size=self.obstacle_gap_y, x=500+(i+1)*self.obstacle_gap_x))
         self.S = Score()
         self.IOI = 0  # Incoming Obstacle Index
         
@@ -130,11 +130,13 @@ class Game(object):
         alive = float(not self.game_over())
         if alive: self.time += 1
         # print([self.B.pos, self.B.vel, self.O[self.IOI].x, self.O[self.IOI].pos])
+        # print(self.time)
         return([self.B.pos, self.B.vel, self.O[self.IOI].x, self.O[self.IOI].pos], self.time, alive, float(action))
 
 
 
     def game_over(self):
+
         # collision ground
         if self.B.pos >= self.window_size_y - self.bird_size_y:
             return True
@@ -144,6 +146,12 @@ class Game(object):
             return True
         
         # NOT DEAD :)
+        return False
+
+
+    def game_over_easy(self):
+        if self.B.pos >= self.window_size_y - self.bird_size_y: return True
+        if self.B.pos < 0: return True
         return False
 
     def event(self):

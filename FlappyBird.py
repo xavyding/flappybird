@@ -1,8 +1,11 @@
 
 from scripts.main import Game
+from scripts.AI_MC_onpolicy import AI, SCALE_FACTOR, ACTION_COOLDOWN
+
 
 # Qt5
 from PyQt5.QtCore import *
+
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 # from PyQt5.QtMultimedia import *
@@ -83,7 +86,10 @@ class GameScene(QGraphicsScene):
         self.RIP.setFont(QFont ("Helvetica", 150))
 
         #/ AI
-        self.ai = None
+        self.ai = AI()
+        try: self.ai.load_data()
+        except: pass
+        self.cooldown = 0
 
         # self.d2g = self.G.window_size_y - self.G.bird_size_y - self.G.B.pos
         # self.d2o = self.G.window_size_x
@@ -132,7 +138,16 @@ class GameScene(QGraphicsScene):
 
         #/ AI
         if self.ai_mode:
-            pass
+            if self.cooldown >= ACTION_COOLDOWN:
+                state = [
+                    int(observer[0]/SCALE_FACTOR),
+                    int(observer[1]*2 + 20),
+                    int(observer[2]/SCALE_FACTOR),
+                    int(observer[3]/SCALE_FACTOR)
+                ]
+                self.player_action = self.ai.prediction(state)
+                self.cooldown = 0
+            else: self.cooldown += 1
 
 
         #/ bird     
